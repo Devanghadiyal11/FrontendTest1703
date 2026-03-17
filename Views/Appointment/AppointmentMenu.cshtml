@@ -1,0 +1,90 @@
+@model IEnumerable<Frontendtest1703.Models.Appointment>
+
+@{
+    ViewData["Title"] = "My Appointments";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-calendar-check me-2 text-primary"></i>My Appointments</h2>
+        <a asp-controller="Appointment" asp-action="AddEdit" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>Book New
+        </a>
+    </div>
+
+    @if (TempData["AppointmentSuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["AppointmentSuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["AppointmentErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["AppointmentErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            <i class="fas fa-info-circle me-2"></i>You have no appointments yet.
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-header bg-white border-bottom-0 pt-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-primary rounded-pill">Token: @(item.TokenNumber.HasValue ? item.TokenNumber.ToString() : "Pending")</span>
+                                @if (item.Status == "waiting")
+                                {
+                                    <span class="badge bg-warning text-dark">Waiting</span>
+                                }
+                                else if (item.Status == "in_progress")
+                                {
+                                    <span class="badge bg-info text-dark">In Progress</span>
+                                }
+                                else if (item.Status == "done")
+                                {
+                                    <span class="badge bg-success">Completed</span>
+                                }
+                                else if (item.Status == "skipped")
+                                {
+                                    <span class="badge bg-danger">Skipped</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">@item.Status</span>
+                                }
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">@item.Date.ToString("dd MMM yyyy")</h5>
+                            <p class="card-text mb-1">
+                                <i class="far fa-clock me-2 text-muted"></i>@item.TimeSlot
+                            </p>
+                            <p class="card-text mb-1">
+                                <i class="fas fa-clinic-medical me-2 text-muted"></i>@item.ClinicName
+                            </p>
+                            <p class="card-text text-muted small">
+                                ID: #@item.Id
+                            </p>
+                        </div>
+                        <div class="card-footer bg-white border-top-0 pb-3">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-info-circle me-1"></i>View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

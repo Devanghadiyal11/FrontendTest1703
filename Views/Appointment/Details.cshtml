@@ -1,0 +1,86 @@
+@model Frontendtest1703.Models.Appointment
+
+@{
+    ViewData["Title"] = "Appointment Details";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-info-circle me-2 text-primary"></i>Appointment Details</h2>
+        <a asp-action="MyAppointments" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Back to List
+        </a>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">General Information</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Date:</strong> @Model.Date.ToString("dd MMM yyyy")</p>
+                    <p><strong>Time Slot:</strong> @Model.TimeSlot</p>
+                    <p><strong>Status:</strong> <span class="badge bg-info text-dark">@Model.Status</span></p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Clinic:</strong> @Model.ClinicName</p>
+                    <p><strong>Token Number:</strong> @(Model.TokenNumber.HasValue ? Model.TokenNumber.ToString() : "Pending")</p>
+                    <p><strong>Patient Name:</strong> @Model.PatientName</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.Prescription != null)
+    {
+        <div class="card shadow-sm mb-4 border-primary">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-prescription me-2"></i>Prescription</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Medicines:</strong></p>
+                <ul class="list-unstyled">
+                    @foreach (var med in Model.Prescription.Medicines)
+                    {
+                        <li><strong>@med.Name</strong> (@med.Dosage, @med.Duration)</li>
+                    }
+                </ul>
+                <hr />
+                <p><strong>Notes:</strong></p>
+                <p class="text-muted">@Model.Prescription.Notes</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle me-2"></i>No prescription available for this appointment yet.
+        </div>
+    }
+
+    @if (Model.Report != null)
+    {
+        <div class="card shadow-sm mb-4 border-success">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-file-medical-alt me-2"></i>Medical Report</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Diagnosis:</strong></p>
+                <p class="text-muted">@Model.Report.Diagnosis</p>
+                <hr />
+                <p><strong>Tests:</strong></p>
+                <p class="text-muted">@Model.Report.Tests</p>
+                <hr />
+                <p><strong>Remarks:</strong></p>
+                <p class="text-muted">@Model.Report.Remarks</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-secondary">
+            <i class="fas fa-info-circle me-2"></i>No medical report available for this appointment yet.
+        </div>
+    }
+</div>

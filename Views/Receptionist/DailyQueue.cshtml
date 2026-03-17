@@ -1,0 +1,97 @@
+@model IEnumerable<Frontendtest1703.Models.QueueEntry>
+
+@{
+    ViewData["Title"] = "Daily Queue Management";
+    DateTime selectedDate = ViewBag.SelectedDate ?? DateTime.Now;
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-list-ol me-2 text-primary"></i>Queue Management</h2>
+        <form asp-action="DailyQueue" method="get" class="d-flex">
+            <input type="date" name="date" class="form-control me-2" value="@selectedDate.ToString("yyyy-MM-dd")" />
+            <button type="submit" class="btn btn-outline-primary">Filter</button>
+        </form>
+    </div>
+
+    @if (TempData["ReceptionistSuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["ReceptionistSuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ReceptionistErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ReceptionistErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            @if (Model != null && Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Token</th>
+                                <th>Patient Name</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td><span class="badge bg-secondary rounded-pill px-3">@item.TokenNumber</span></td>
+                                    <td class="fw-bold">@item.PatientName</td>
+                                    <td>
+                                        <span class="badge @(item.Status == "waiting" ? "bg-warning text-dark" : item.Status == "in_progress" ? "bg-info text-dark" : item.Status == "done" ? "bg-success" : "bg-danger") px-3">
+                                            @item.Status
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            @if (item.Status.ToLower() == "waiting")
+                                            {
+                                                <form asp-action="UpdateQueueStatus" method="post" class="me-1">
+                                                    <input type="hidden" name="id" value="@item.Id" />
+                                                    <input type="hidden" name="status" value="in-progress" />
+                                                    <button type="submit" class="btn btn-primary">in-progress</button>
+                                                </form>
+                                                <form asp-action="UpdateQueueStatus" method="post">
+                                                    <input type="hidden" name="id" value="@item.Id" />
+                                                    <input type="hidden" name="status" value="skipped" />
+                                                    <button type="submit" class="btn btn-outline-danger">skipped</button>
+                                                </form>
+                                            }
+                                            else if (item.Status.ToLower() == "in-progress")
+                                            {
+                                                <form asp-action="UpdateQueueStatus" method="post">
+                                                    <input type="hidden" name="id" value="@item.Id" />
+                                                    <input type="hidden" name="status" value="done" />
+                                                    <button type="submit" class="btn btn-success">done</button>
+                                                </form>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5 text-muted">
+                    <i class="fas fa-calendar-times d-block mb-2 fs-1 opacity-25"></i>
+                    <p class="mb-0">No entries found for @selectedDate.ToShortDateString().</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

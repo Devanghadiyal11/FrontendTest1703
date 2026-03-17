@@ -1,0 +1,30 @@
+@model Frontendtest1703.Models.Clinic
+
+@{
+    ViewData["Title"] = "Clinic Information";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4"><i class="fas fa-hospital-user me-2 text-primary"></i>Clinic Information</h2>
+
+    @if (Model != null)
+    {
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">@Model.Name</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Clinic Code:</strong> @Model.Code</p>
+                <p><strong>Description:</strong> @Model.Description</p>
+                <p><strong>Address:</strong> @Model.Address</p>
+                <p><strong>Phone Number:</strong> @Model.PhoneNumber</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning">
+            Could not load clinic information.
+        </div>
+    }
+</div>

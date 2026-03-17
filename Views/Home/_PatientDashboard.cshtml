@@ -1,0 +1,61 @@
+@model Frontendtest1703.Models.DashboardViewModel
+
+<div class="row mt-4">
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-calendar-alt me-2 text-primary"></i>My Appointments</h5>
+                <a asp-controller="Appointment" asp-action="AppointmentMenu" class="btn btn-sm btn-outline-primary">View
+                    All</a>
+            </div>
+            <div class="card-body">
+                @if (Model.Appointments != null && Model.Appointments.Any())
+
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var appointment in Model.Appointments.Take(5))
+
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>@appointment.Date.ToString("dd MMM yyyy")</strong><br />
+                                    <small class="text-muted">@appointment.TimeSlot</small>
+                                </div>
+                                <span
+                                    class="badge @(appointment.Status?.ToLower() == "completed" ? "bg-success" : (appointment.Status?.ToLower() == "in-progress" ? "bg-warning text-dark" : "bg-info text-dark"))">
+                                    @appointment.Status
+                                </span>
+                            </li>
+                        }
+                    </ul>
+                }
+
+                else
+
+                {
+                    <p class="text-muted mb-0">No appointments found.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-prescription-bottle-alt me-2 text-primary"></i>Prescriptions & Reports
+                </h5>
+                <div class="btn-group">
+                    <a asp-controller="Appointment" asp-action="MyPrescriptions"
+                        class="btn btn-sm btn-outline-primary">Prescriptions</a>
+                    <a asp-controller="Appointment" asp-action="MyReports"
+                        class="btn btn-sm btn-outline-primary">Reports</a>
+                </div>
+            </div>
+            <div class="card-body">
+                <p class="card-text">You have <strong>@(Model.Prescriptions?.Count ?? 0)</strong> prescriptions and
+                    <strong>@(Model.Reports?.Count ?? 0)</strong> medical reports.</p>
+                <p class="text-muted small">Access your medical history through the links above.</p>
+            </div>
+        </div>
+    </div>
+</div>

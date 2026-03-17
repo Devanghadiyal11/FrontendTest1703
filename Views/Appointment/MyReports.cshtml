@@ -1,0 +1,49 @@
+@model IEnumerable<Frontendtest1703.Models.Report>
+
+@{
+    ViewData["Title"] = "My Reports";
+}
+
+<div class="container mt-4">
+    <h2><i class="fas fa-file-medical-alt me-2 text-primary"></i>My Medical Reports</h2>
+
+    @if (TempData["AppointmentErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["AppointmentErrorMessage"]</div>
+    }
+
+    <div class="card shadow-sm mt-4">
+        <div class="card-body">
+            @if (Model != null && Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Diagnosis</th>
+                                <th>Tests</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.Id</td>
+                                    <td>@item.Diagnosis</td>
+                                    <td>@item.Tests</td>
+                                    <td>@item.Remarks</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">No reports found.</p>
+            }
+        </div>
+    </div>
+</div>

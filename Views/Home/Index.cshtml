@@ -1,0 +1,53 @@
+@model Frontendtest1703.Models.DashboardViewModel
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Dashboard";
+    var userName = HttpContextAccessor.HttpContext?.Session.GetString("UserName");
+    var clinicName = HttpContextAccessor.HttpContext?.Session.GetString("ClinicName");
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-primary text-white shadow-lg">
+                <div class="card-body p-4">
+                    <h2 class="card-title mb-1">Welcome back, @userName!</h2>
+                    <p class="card-text opacity-75">You are logged in as <strong>@Model.Role</strong> for <strong>@clinicName</strong>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null || TempData["AdminSuccessMessage"] != null || TempData["DoctorSuccessMessage"] != null || TempData["ReceptionistSuccessMessage"] != null || TempData["AppointmentSuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @(TempData["SuccessMessage"] ?? TempData["AdminSuccessMessage"] ?? TempData["DoctorSuccessMessage"] ?? TempData["ReceptionistSuccessMessage"] ?? TempData["AppointmentSuccessMessage"])
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null || TempData["AdminErrorMessage"] != null || TempData["DoctorErrorMessage"] != null || TempData["ReceptionistErrorMessage"] != null || TempData["AppointmentErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @(TempData["ErrorMessage"] ?? TempData["AdminErrorMessage"] ?? TempData["DoctorErrorMessage"] ?? TempData["ReceptionistErrorMessage"] ?? TempData["AppointmentErrorMessage"])
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @switch (Model.Role.ToLower())
+    {
+        case "admin":
+            @await Html.PartialAsync("_AdminDashboard", Model)
+            break;
+        case "doctor":
+            @await Html.PartialAsync("_DoctorDashboard", Model)
+            break;
+        case "receptionist":
+            @await Html.PartialAsync("_ReceptionistDashboard", Model)
+            break;
+        case "patient":
+            @await Html.PartialAsync("_PatientDashboard", Model)
+            break;
+    }
+</div>
